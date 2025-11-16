@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skills & Certifications - Your Name</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-dark: #2C2C2C;
+            --secondary-gray: #6B7280;
+            --accent-sage: #8B9A7A;
+            --accent-coral: #E8A598;
+            --bg-off-white: #FEFEFE;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-off-white);
+            color: var(--primary-dark);
+            line-height: 1.6;
+        }
+        
+        .font-display {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .nav-blur {
+            backdrop-filter: blur(10px);
+            background: rgba(254, 254, 254, 0.9);
+        }
+        
+        .skill-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .skill-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .progress-ring {
+            transition: stroke-dasharray 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .cert-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .cert-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .category-filter {
+            transition: all 0.3s ease;
+        }
+        
+        .category-filter.active {
+            background: linear-gradient(135deg, var(--accent-sage), var(--accent-coral));
+            color: white;
+        }
+        
+        .skill-item {
+            opacity: 1;
+            transform: scale(1);
+            transition: all 0.3s ease;
+        }
+        
+        .skill-item.hidden {
+            opacity: 0;
+            transform: scale(0.8);
+            pointer-events: none;
+        }
+        
+        .certificate-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+        
+        .certificate-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            max-width: 2xl;
+            max-height: 90vh;
+            overflow-y: auto;
+            margin: 2rem;
+            animation: modalSlideIn 0.3s ease-out;
+        }
+        
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 nav-blur border-b border-gray-200">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div class="font-display font-semibold text-xl text-gray-800">
+                    <a href="index.html">Your Name</a>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="index.html" class="text-gray-600 hover:text-gray-900 transition-colors duration-300">Home</a>
+                    <a href="projects.html" class="text-gray-600 hover:text-gray-900 transition-colors duration-300">Projects</a>
+                    <a href="skills.html" class="text-gray-900 font-medium">Skills</a>
+                    <a href="contact.html" class="text-gray-600 hover:text-gray-900 transition-colors duration-300">Contact</a>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" class="text-gray-600 hover:text-gray-900">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200">
+            <div class="px-6 py-4 space-y-4">
+                <a href="index.html" class="block text-gray-600 hover:text-gray-900">Home</a>
+                <a href="projects.html" class="block text-gray-600 hover:text-gray-900">Projects</a>
+                <a href="skills.html" class="block text-gray-900 font-medium">Skills</a>
+                <a href="certificates.html" class="block text-gray-600 hover:text-gray-900">Certificates</a>
+                <a href="contact.html" class="block text-gray-600 hover:text-gray-900">Contact</a>
+                <a href="https://www.linkedin.com/in/ayan-bhadra-0a193b377" target="_blank" class="block text-blue-600 hover:text-blue-800">LinkedIn Profile</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-32 pb-16 bg-gradient-to-br from-gray-50 to-gray-100">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center reveal">
+                <h1 class="font-display text-5xl lg:text-6xl font-bold text-gray-900 mb-6">Skills & Certifications</h1>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    A comprehensive overview of my technical expertise, professional certifications, and continuous learning journey in computer science and artificial intelligence.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Radar Chart Section -->
+    <section class="py-20">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-16 reveal">
+                <h2 class="font-display text-4xl lg:text-5xl font-bold text-gray-900 mb-4">Technical Proficiency</h2>
+                <p class="text-xl text-gray-600">Interactive visualization of my core competencies</p>
+            </div>
+            
+            <div class="bg-white rounded-2xl shadow-xl p-8 reveal">
+                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <div id="skills-radar" style="width: 100%; height: 400px;"></div>
+                    </div>
+                    <div class="space-y-8">
+                        <div>
+                            <h3 class="font-display text-2xl font-semibold text-gray-900 mb-4">Core Strengths</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-gray-700 font-medium">Problem Solving</span>
+                                    <div class="flex items-center space-x-2">
+                                        <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                            <div class="h-full bg-gradient-to-r from-green-400 to-blue-500 rounded-full" style="width: 90%"></div>
+                                        </div>
+                                        <span class="text-sm text-gray-600">90%</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-gray-700 font-medium">Machine Learning</span>
+                                    <div class="flex items-center space-x-2">
+                                        <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                            <div class="h-full bg-gradient-to-r from-green-400 to-blue-500 rounded-full" style="width: 80%"></div>
+                                        </div>
+                                        <span class="text-sm text-gray-600">80%</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-gray-700 font-medium">Data Analysis</span>
+                                    <div class="flex items-center space-x-2">
+                                        <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                            <div class="h-full bg-gradient-to-r from-green-400 to-blue-500 rounded-full" style="width: 85%"></div>
+                                        </div>
+                                        <span class="text-sm text-gray-600">85%</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-gray-700 font-medium">Software Development</span>
+                                    <div class="flex items-center space-x-2">
+                                        <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                            <div class="h-full bg-gradient-to-r from-green-400 to-blue-500 rounded-full" style="width: 75%"></div>
+                                        </div>
+                                        <span class="text-sm text-gray-600">75%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gradient-to-r from-green-50 to-blue-50 p-6 rounded-xl">
+                            <h4 class="font-semibold text-lg text-gray-900 mb-2">Learning Philosophy</h4>
+                            <p class="text-gray-600">I believe in continuous learning and staying updated with the latest technologies. My approach combines theoretical knowledge with practical application through hands-on projects.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Detailed Skills Section -->
+    <section class="py-20 bg-gray-50">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-16 reveal">
+                <h2 class="font-display text-4xl lg:text-5xl font-bold text-gray-900 mb-4">Technical Skills</h2>
+                <p class="text-xl text-gray-600">Explore my expertise by category</p>
+            </div>
+            
+            <!-- Filter Buttons -->
+            <div class="flex flex-wrap justify-center gap-4 mb-12 reveal">
+                <button class="category-filter active px-6 py-3 rounded-full border border-gray-300 text-gray-700 hover:border-transparent" data-category="all">
+                    All Skills
+                </button>
+                <button class="category-filter px-6 py-3 rounded-full border border-gray-300 text-gray-700 hover:border-transparent" data-category="programming">
+                    Programming
+                </button>
+                <button class="category-filter px-6 py-3 rounded-full border border-gray-300 text-gray-700 hover:border-transparent" data-category="machine-learning">
+                    Machine Learning
+                </button>
+                <button class="category-filter px-6 py-3 rounded-full border border-gray-300 text-gray-700 hover:border-transparent" data-category="database">
+                    Database
+                </button>
+                <button class="category-filter px-6 py-3 rounded-full border border-gray-300 text-gray-700 hover:border-transparent" data-category="tools">
+                    Tools & Frameworks
+                </button>
+            </div>
+            
+            <!-- Skills Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="skills-grid">
+                
+                <!-- Programming Languages -->
+                <div class="skill-item skill-card bg-white p-8 rounded-xl shadow-lg" data-category="programming">
+                    <div class="flex items-center mb-6">
+                        <div class="w-16 h-16 bg-gradient-to-br from-blue-400 to-purple-600 rounded-xl flex items-center justify-center">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                            </svg>
+                        </div>
+                        <h3 class="font-display text-xl font-semibold text-gray-900 ml-4">Python</h3>
+                    </div>
+                    <div class="mb-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm text-gray-600">Proficiency</span>
+                            <span class="text-sm font-medium text-gray-900">85%</span>
+                        </div>
+                        <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-blue-400 to-purple-600 rounded-full" style="width: 85%"></div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 text-sm">Advanced in data structures, algorithms, and object-oriented programming. Experienced with various libraries including NumPy, Pandas, and Scikit-learn.</p>
+                </div>
+
+                <div class="skill-item skill-card bg-white p-8 rounded-xl shadow-lg" data-category="programming">
+                    <div class="flex items-center mb-6">
+                        <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-xl flex items-center justify-center">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                            </svg>
+                        </div>
+                        <h3 class="font-display text-xl font-semibold text-gray-900 ml-4">C++</h3>
+                    </div>
+                    <div class="mb-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm text-gray-600">Proficiency</span>
+                            <span class="text-sm font-medium text-gray-900">75%</span>
+                        </div>
+                        <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-blue-500 to-cyan-600 rounded-full" style="width: 75%"></div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 text-sm">Strong foundation in system programming, memory management, and performance optimization. Experience with STL and object-oriented design patterns.</p>
+                </div>
+
+                <div class="skill-item skill-card bg-white p-8 rounded-xl shadow-lg" data-category="programming">
+                    <div class="flex items-center mb-6">
+                        <div class="w-16 h-16 bg-gradient-to-br from-red-500 to-orange-600 rounded-xl flex items-center justify-center">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                            </svg>
+                        </div>
+                        <h3 class="font-display text-xl font-semibold text-gray-900 ml-4">Java</h3>
+                    </div>
+                    <div class="mb-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm text-gray-600">Proficiency</span>
+                            <span class="text-sm font-medium text-gray-900">70%</span>
+                        </div>
+                        <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-red-500 to-orange-600 rounded-full" style="width: 70%"></div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 text-sm">Experienced in enterprise application development, GUI design with Swing, and database connectivity using JDBC. Familiar with Spring framework.</p>
+                </div>
+
+                <!-- Machine Learning -->
+                <div class="skill-item skill-card bg-white p-8 rounded-xl shadow-lg" data-category="machine-learning">
+                    <div class="flex items-center mb-6">
+                        <div class="w-16 h-16 bg-gradient-to-br from-green-400 to-blue-600 rounded-xl flex items-center justify-center">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="font-display text-xl font-semibold text-gray-900 ml-4">Scikit-learn</h3>
+                    </div>
+                    <div class="mb-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm text-gray-600">Proficiency</span>
+                            <span class="text-sm font-medium text-gray-900">75%</span>
+                        </div>
+                        <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-green-400 to-blue-600 rounded-full" style="width: 75%"></div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 text-sm">Hands-on experience with classification, regression, clustering algorithms. Familiar with model evaluation, feature selection, and hyperparameter tuning.</p>
+                </div>
+
+                <div class="skill-item skill-card bg-white p-8 rounded-xl shadow-lg" data-category="machine-learning">
+                    <div class="flex items-center mb-6">
+                        <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="font-display text-xl font-semibold text-gray-900 ml-4">Data Visualization</h3>
+                    </div>
+                    <div class="mb-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm text-gray-600">Proficiency</span>
+                            <span class="text-sm font-medium text-gray-900">80%</span>
+                        </div>
+                        <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-purple-500 to-pink-600 rounded-full" style="width: 80%"></div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 text-sm">Proficient in creating insightful visualizations using Matplotlib, Seaborn, and Plotly. Experience with interactive dashboards and statistical graphics.</p>
+                </div>
+
+                <div class="skill-item skill-card bg-white p-8 rounded-xl shadow-lg" data-category="machine-learning">
+                    <div class="flex items-center mb-6">
+                        <div class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                            </svg>
+                        </div>
+                        <h3 class="font-display text-xl font-semibold text-gray-900 ml-4">Data Preprocessing</h3>
+                    </div>
+                    <div class="mb-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm text-gray-600">Proficiency</span>
+                            <span class="text-sm font-medium text-gray-900">85%</span>
+                        </div>
+                        <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full" style="width: 85%"></div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 text-sm">Expert in data cleaning, feature engineering, normalization, and handling missing values. Experience with both structured and unstructured data.</p>
+                </div>
+
+                <!-- Database Technologies -->
+                <div class="skill-item skill-card bg-white p-8 rounded-xl shadow-lg" data-category="database">
+                    <div class="flex items-center mb-6">
+                        <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-teal-600 rounded-xl flex items-center justify-center">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"></path>
+                            </svg>
+                        </div>
+                        <h3 class="font-display text-xl font-semibold text-gray-900 ml-4">MySQL</h3>
+                    </div>
+                    <div class="mb-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm text-gray-600">Proficiency</span>
+                            <span class="text-sm font-medium text-gray-900">75%</span>
+                        </div>
+                        <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-green-500 to-teal-600 rounded-full" style="width: 75%"></div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 text-sm">Experienced in database design, complex queries, stored procedures, and performance optimization. Familiar with normalization and indexing strategies.</p>
+                </div>
+
+                <div class="skill-item skill-card bg-white p-8 rounded-xl shadow-lg" data-category="database">
+                    <div class="flex items-center mb-6">
+                        <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                            </svg>
+                        </div>
+                        <h3 class="font-display text-xl font-semibold text-gray-900 ml-4">SQLite</h3>
+                    </div>
+                    <div class="mb-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm text-gray-600">Proficiency</span>
+                            <span class="text-sm font-medium text-gray-900">80%</span>
+                        </div>
+                        <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full" style="width: 80%"></div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 text-sm">Proficient in lightweight database solutions for desktop applications. Experience with embedded databases and local data storage optimization.</p>
+                </div>
+
+                <!-- Tools & Frameworks -->
+                <div class="skill-item skill-card bg-white p-8 rounded-xl shadow-lg" data-category="tools">
+                    <div class="flex items-center mb-6">
+                        <div class="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-600 rounded-xl flex items-center justify-center">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="font-display text-xl font-semibold text-gray-900 ml-4">Git & GitHub</h3>
+                    </div>
+                    <div class="mb-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm text-gray-600">Proficiency</span>
+                            <span class="text-sm font-medium text-gray-900">85%</span>
+                        </div>
+                        <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-orange-500 to-red-600 rounded-full" style="width: 85%"></div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 text-sm">Advanced version control skills including branching strategies, merge conflict resolution, and collaborative workflows. Active GitHub profile with multiple projects.</p>
+                </div>
+
+                <div class="skill-item skill-card bg-white p-8 rounded-xl shadow-lg" data-category="tools">
+                    <div class="flex items-center mb-6">
+                        <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="font-display text-xl font-semibold text-gray-900 ml-4">Jupyter Notebook</h3>
+                    </div>
+                    <div class="mb-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm text-gray-600">Proficiency</span>
+                            <span class="text-sm font-medium text-gray-900">90%</span>
+                        </div>
+                        <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-purple-500 to-pink-600 rounded-full" style="width: 90%"></div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 text-sm">Extensive experience in data analysis, machine learning experiments, and interactive visualizations. Proficient in creating well-documented research notebooks.</p>
+                </div>
+
+                <div class="skill-item skill-card bg-white p-8 rounded-xl shadow-lg" data-category="tools">
+                    <div class="flex items-center mb-6">
+                        <div class="w-16 h-16 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="font-display text-xl font-semibold text-gray-900 ml-4">VS Code</h3>
+                    </div>
+                    <div class="mb-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm text-gray-600">Proficiency</span>
+                            <span class="text-sm font-medium text-gray-900">95%</span>
+                        </div>
+                        <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full" style="width: 95%"></div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 text-sm">Highly proficient in using VS Code for development across multiple languages. Familiar with extensions, debugging tools, and integrated terminal usage.</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Certifications Section -->
+    <section class="py-20">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-16 reveal">
+                <h2 class="font-display text-4xl lg:text-5xl font-bold text-gray-900 mb-4">Certifications</h2>
+                <p class="text-xl text-gray-600">Professional credentials and achievements</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- Cisco Academy Certificate -->
+                <div class="cert-card bg-white rounded-xl shadow-lg overflow-hidden reveal" onclick="openCertificateModal('cisco')">
+                    <div class="h-48 bg-gradient-to-br from-blue-400 to-purple-600 flex items-center justify-center relative overflow-hidden">
+                        <div class="absolute inset-0 bg-black bg-opacity-20"></div>
+                        <svg class="w-20 h-20 text-white relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+                        </svg>
+                        <div class="absolute top-4 right-4 bg-white bg-opacity-20 backdrop-blur-sm rounded-lg px-3 py-1">
+                            <span class="text-white text-sm font-medium">2023</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-display text-xl font-semibold text-gray-900 mb-3">Cisco Academy Certificate</h3>
+                        <p class="text-gray-600 mb-4">Comprehensive networking fundamentals and cybersecurity principles from Cisco Networking Academy.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-blue-600 font-medium">View Certificate</span>
+                            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Social Volunteering Certificate 1 -->
+                <div class="cert-card bg-white rounded-xl shadow-lg overflow-hidden reveal" onclick="openCertificateModal('volunteer1')">
+                    <div class="h-48 bg-gradient-to-br from-green-400 to-teal-600 flex items-center justify-center relative overflow-hidden">
+                        <div class="absolute inset-0 bg-black bg-opacity-20"></div>
+                        <svg class="w-20 h-20 text-white relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                        </svg>
+                        <div class="absolute top-4 right-4 bg-white bg-opacity-20 backdrop-blur-sm rounded-lg px-3 py-1">
+                            <span class="text-white text-sm font-medium">2023</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-display text-xl font-semibold text-gray-900 mb-3">Social Volunteering Certificate</h3>
+                        <p class="text-gray-600 mb-4">Community service and social welfare activities demonstrating leadership and social responsibility.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-green-600 font-medium">View Certificate</span>
+                            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                                <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI/ML Certificate -->
+                <div class="cert-card bg-white rounded-xl shadow-lg overflow-hidden reveal" onclick="openCertificateModal('aiml')">
+                    <div class="h-48 bg-gradient-to-br from-purple-400 to-pink-600 flex items-center justify-center relative overflow-hidden">
+                        <div class="absolute inset-0 bg-black bg-opacity-20"></div>
+                        <svg class="w-20 h-20 text-white relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                        </svg>
+                        <div class="absolute top-4 right-4 bg-white bg-opacity-20 backdrop-blur-sm rounded-lg px-3 py-1">
+                            <span class="text-white text-sm font-medium">2024</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-display text-xl font-semibold text-gray-900 mb-3">AI/ML Specialization Certificate</h3>
+                        <p class="text-gray-600 mb-4">Advanced certification in artificial intelligence and machine learning algorithms, models, and applications.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-purple-600 font-medium">View Certificate</span>
+                            <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                                <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Learning Timeline -->
+    <section class="py-20 bg-gray-50">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-16 reveal">
+                <h2 class="font-display text-4xl lg:text-5xl font-bold text-gray-900 mb-4">Learning Journey</h2>
+                <p class="text-xl text-gray-600">Key milestones in my technical education</p>
+            </div>
+            
+            <div class="relative">
+                <!-- Timeline Line -->
+                <div class="absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-b from-green-400 to-blue-500 rounded-full"></div>
+                
+                <div class="space-y-12">
+                    <!-- Timeline Item 1 -->
+                    <div class="flex items-center reveal">
+                        <div class="w-1/2 pr-8 text-right">
+                            <div class="bg-white p-6 rounded-xl shadow-lg">
+                                <h3 class="font-display text-xl font-semibold text-gray-900 mb-2">Programming Fundamentals</h3>
+                                <p class="text-gray-600 mb-3">Mastered core programming concepts, data structures, and algorithms using C++ and Java.</p>
+                                <span class="text-sm text-gray-500">2021 - 2022</span>
+                            </div>
+                        </div>
+                        <div class="w-8 h-8 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full border-4 border-white shadow-lg z-10"></div>
+                        <div class="w-1/2 pl-8"></div>
+                    </div>
+                    
+                    <!-- Timeline Item 2 -->
+                    <div class="flex items-center reveal">
+                        <div class="w-1/2 pr-8"></div>
+                        <div class="w-8 h-8 bg-gradient-to-r from-green-400 to-teal-500 rounded-full border-4 border-white shadow-lg z-10"></div>
+                        <div class="w-1/2 pl-8">
+                            <div class="bg-white p-6 rounded-xl shadow-lg">
+                                <h3 class="font-display text-xl font-semibold text-gray-900 mb-2">Database Design</h3>
+                                <p class="text-gray-600 mb-3">Learned relational database concepts, SQL programming, and database management systems.</p>
+                                <span class="text-sm text-gray-500">2022 - 2023</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Timeline Item 3 -->
+                    <div class="flex items-center reveal">
+                        <div class="w-1/2 pr-8 text-right">
+                            <div class="bg-white p-6 rounded-xl shadow-lg">
+                                <h3 class="font-display text-xl font-semibold text-gray-900 mb-2">Machine Learning</h3>
+                                <p class="text-gray-600 mb-3">Explored ML algorithms, data preprocessing, and model evaluation techniques using Python.</p>
+                                <span class="text-sm text-gray-500">2023 - 2024</span>
+                            </div>
+                        </div>
+                        <div class="w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full border-4 border-white shadow-lg z-10"></div>
+                        <div class="w-1/2 pl-8"></div>
+                    </div>
+                    
+                    <!-- Timeline Item 4 -->
+                    <div class="flex items-center reveal">
+                        <div class="w-1/2 pr-8"></div>
+                        <div class="w-8 h-8 bg-gradient-to-r from-orange-400 to-red-500 rounded-full border-4 border-white shadow-lg z-10"></div>
+                        <div class="w-1/2 pl-8">
+                            <div class="bg-white p-6 rounded-xl shadow-lg">
+                                <h3 class="font-display text-xl font-semibold text-gray-900 mb-2">Project Development</h3>
+                                <p class="text-gray-600 mb-3">Applied knowledge through various projects including bank management systems and ML applications.</p>
+                                <span class="text-sm text-gray-500">2024 - Present</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Certificate Modal -->
+    <div id="certificate-modal" class="certificate-modal">
+        <div class="modal-content w-full max-w-2xl mx-4">
+            <div class="p-8">
+                <div class="flex justify-between items-start mb-6">
+                    <h2 id="modal-title" class="font-display text-3xl font-bold text-gray-900"></h2>
+                    <button onclick="closeCertificateModal()" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div id="modal-content">
+                    <!-- Dynamic content will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-6xl mx-auto px-6 text-center">
+            <div class="font-display text-2xl font-semibold mb-4">Your Name</div>
+            <p class="text-gray-400 mb-6">Computer Science Graduate & AI Enthusiast</p>
+            <div class="flex justify-center space-x-6 mb-8">
+                <a href="mailto:yourEmail@example.com" class="text-gray-400 hover:text-white transition-colors duration-300">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.89 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                    </svg>
+                </a>
+                <a href="tel:01XXXXXXXXX" class="text-gray-400 hover:text-white transition-colors duration-300">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+                    </svg>
+                </a>
+            </div>
+            <p class="text-gray-500 text-sm">© 2024 Your Name. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Skills page functionality
+        class SkillsPage {
+            constructor() {
+                this.init();
+            }
+
+            init() {
+                this.setupSkillsRadar();
+                this.setupCategoryFilter();
+                this.setupScrollAnimations();
+                this.setupCertificateModals();
+            }
+
+            setupSkillsRadar() {
+                const radarContainer = document.getElementById('skills-radar');
+                if (radarContainer) {
+                    const chart = echarts.init(radarContainer);
+                    
+                    const option = {
+                        title: {
+                            text: 'Technical Skills Overview',
+                            left: 'center',
+                            textStyle: {
+                                fontSize: 18,
+                                fontWeight: 'bold',
+                                color: '#2C2C2C'
+                            }
+                        },
+                        radar: {
+                            indicator: [
+                                { name: 'Python', max: 100 },
+                                { name: 'C++', max: 100 },
+                                { name: 'Java', max: 100 },
+                                { name: 'Machine Learning', max: 100 },
+                                { name: 'Data Analysis', max: 100 },
+                                { name: 'Database Design', max: 100 },
+                                { name: 'Problem Solving', max: 100 },
+                                { name: 'Software Development', max: 100 }
+                            ],
+                            radius: '65%',
+                            axisName: {
+                                color: '#6B7280',
+                                fontSize: 12,
+                                fontWeight: '500'
+                            },
+                            splitLine: {
+                                lineStyle: {
+                                    color: '#E5E7EB'
+                                }
+                            },
+                            axisLine: {
+                                lineStyle: {
+                                    color: '#D1D5DB'
+                                }
+                            },
+                            splitArea: {
+                                show: true,
+                                areaStyle: {
+                                    color: ['rgba(139, 154, 122, 0.05)', 'rgba(232, 165, 152, 0.05)']
+                                }
+                            }
+                        },
+                        series: [{
+                            name: 'Skills',
+                            type: 'radar',
+                            data: [{
+                                value: [85, 75, 70, 80, 85, 75, 90, 75],
+                                name: 'Current Level',
+                                areaStyle: {
+                                    color: 'rgba(139, 154, 122, 0.3)'
+                                },
+                                lineStyle: {
+                                    color: '#8B9A7A',
+                                    width: 3
+                                },
+                                itemStyle: {
+                                    color: '#8B9A7A',
+                                    borderColor: '#ffffff',
+                                    borderWidth: 2
+                                }
+                            }],
+                            animationDuration: 2000,
+                            animationEasing: 'cubicOut'
+                        }]
+                    };
+
+                    chart.setOption(option);
+                    
+                    // Responsive resize
+                    window.addEventListener('resize', () => {
+                        chart.resize();
+                    });
+                }
+            }
+
+            setupCategoryFilter() {
+                const filterButtons = document.querySelectorAll('.category-filter');
+                const skillItems = document.querySelectorAll('.skill-item');
+
+                filterButtons.forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const category = e.target.dataset.category;
+                        this.filterSkills(category, skillItems);
+                        this.updateActiveFilter(e.target);
+                    });
+                });
+            }
+
+            filterSkills(category, skillItems) {
+                skillItems.forEach(item => {
+                    const itemCategory = item.dataset.category;
+                    
+                    if (category === 'all' || itemCategory === category) {
+                        item.classList.remove('hidden');
+                        anime({
+                            targets: item,
+                            opacity: [0, 1],
+                            scale: [0.8, 1],
+                            duration: 400,
+                            easing: 'easeOutCubic'
+                        });
+                    } else {
+                        anime({
+                            targets: item,
+                            opacity: [1, 0],
+                            scale: [1, 0.8],
+                            duration: 300,
+                            easing: 'easeInCubic',
+                            complete: () => {
+                                item.classList.add('hidden');
+                            }
+                        });
+                    }
+                });
+            }
+
+            updateActiveFilter(activeBtn) {
+                document.querySelectorAll('.category-filter').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                activeBtn.classList.add('active');
+            }
+
+            setupScrollAnimations() {
+                const observerOptions = {
+                    threshold: 0.1,
+                    rootMargin: '0px 0px -50px 0px'
+                };
+
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('active');
+                        }
+                    });
+                }, observerOptions);
+
+                document.querySelectorAll('.reveal').forEach(el => {
+                    observer.observe(el);
+                });
+            }
+
+            setupCertificateModals() {
+                // Certificate details data
+                this.certificateDetails = {
+                    'cisco': {
+                        title: 'Cisco Academy Certificate',
+                        content: `
+                            <div class="space-y-6">
+                                <div class="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-xl">
+                                    <h3 class="font-semibold text-lg text-gray-900 mb-3">Certificate Details</h3>
+                                    <div class="grid md:grid-cols-2 gap-4 text-sm">
+                                        <div>
+                                            <span class="font-medium text-gray-700">Issued by:</span>
+                                            <span class="text-gray-600">Cisco Networking Academy</span>
+                                        </div>
+                                        <div>
+                                            <span class="font-medium text-gray-700">Completion Date:</span>
+                                            <span class="text-gray-600">March 2023</span>
+                                        </div>
+                                        <div>
+                                            <span class="font-medium text-gray-700">Duration:</span>
+                                            <span class="text-gray-600">6 months</span>
+                                        </div>
+                                        <div>
+                                            <span class="font-medium text-gray-700">Grade:</span>
+                                            <span class="text-gray-600">Distinction</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <h3 class="font-semibold text-lg text-gray-900 mb-3">Skills Acquired</h3>
+                                    <ul class="space-y-2 text-gray-600">
+                                        <li class="flex items-center">
+                                            <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            Network fundamentals and protocols
+                                        </li>
+                                        <li class="flex items-center">
+                                            <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            Cybersecurity principles
+                                        </li>
+                                        <li class="flex items-center">
+                                            <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            Routing and switching concepts
+                                        </li>
+                                        <li class="flex items-center">
+                                            <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            Network troubleshooting
+                                        </li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="bg-gray-50 p-4 rounded-lg">
+                                    <p class="text-gray-600 text-sm">This comprehensive program provided foundational knowledge in networking and cybersecurity, essential for understanding modern IT infrastructure and security practices.</p>
+                                </div>
+                            </div>
+                        `
+                    },
+                    'volunteer1': {
+                        title: 'Social Volunteering Certificate',
+                        content: `
+                            <div class="space-y-6">
+                                <div class="bg-gradient-to-r from-green-50 to-teal-50 p-6 rounded-xl">
+                                    <h3 class="font-semibold text-lg text-gray-900 mb-3">Volunteer Experience</h3>
+                                    <div class="grid md:grid-cols-2 gap-4 text-sm">
+                                        <div>
+                                            <span class="font-medium text-gray-700">Organization:</span>
+                                            <span class="text-gray-600">Local Community Center</span>
+                                        </div>
+                                        <div>
+                                            <span class="font-medium text-gray-700">Duration:</span>
+                                            <span class="text-gray-600">6 months</span>
+                                        </div>
+                                        <div>
+                                            <span class="font-medium text-gray-700">Role:</span>
+                                            <span class="text-gray-600">Community Organizer</span>
+                                        </div>
+                                        <div>
+                                            <span class="font-medium text-gray-700">Hours:</span>
+                                            <span class="text-gray-600">120+ volunteer hours</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <h3 class="font-semibold text-lg text-gray-900 mb-3">Activities & Impact</h3>
+                                    <ul class="space-y-2 text-gray-600">
+                                        <li class="flex items-center">
+                                            <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            Organized community tech literacy programs
+                                        </li>
+                                        <li class="flex items-center">
+                                            <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            Mentored students in basic computer skills
+                                        </li>
+                                        <li class="flex items-center">
+                                            <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            Coordinated fundraising events for local charities
+                                        </li>
+                                        <li class="flex items-center">
+                                            <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            Developed digital literacy curriculum
+                                        </li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="bg-gray-50 p-4 rounded-lg">
+                                    <p class="text-gray-600 text-sm">This volunteering experience enhanced my leadership, communication, and community engagement skills while making a positive impact on local communities.</p>
+                                </div>
+                            </div>
+                        `
+                    },
+                    'aiml': {
+                        title: 'AI/ML Specialization Certificate',
+                        content: `
+                            <div class="space-y-6">
+                                <div class="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-xl">
+                                    <h3 class="font-semibold text-lg text-gray-900 mb-3">Specialization Details</h3>
+                                    <div class="grid md:grid-cols-2 gap-4 text-sm">
+                                        <div>
+                                            <span class="font-medium text-gray-700">Provider:</span>
+                                            <span class="text-gray-600">Online Learning Platform</span>
+                                        </div>
+                                        <div>
+                                            <span class="font-medium text-gray-700">Completion:</span>
+                                            <span class="text-gray-600">June 2024</span>
+                                        </div>
+                                        <div>
+                                            <span class="font-medium text-gray-700">Duration:</span>
+                                            <span class="text-gray-600">4 months</span>
+                                        </div>
+                                        <div>
+                                            <span class="font-medium text-gray-700">Capstone:</span>
+                                            <span class="text-gray-600">Student Performance Predictor</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <h3 class="font-semibold text-lg text-gray-900 mb-3">Course Modules</h3>
+                                    <ul class="space-y-2 text-gray-600">
+                                        <li class="flex items-center">
+                                            <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            Machine Learning Fundamentals
+                                        </li>
+                                        <li class="flex items-center">
+                                            <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            Supervised Learning Algorithms
+                                        </li>
+                                        <li class="flex items-center">
+                                            <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            Unsupervised Learning Techniques
+                                        </li>
+                                        <li class="flex items-center">
+                                            <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            Model Evaluation & Optimization
+                                        </li>
+                                        <li class="flex items-center">
+                                            <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            Deep Learning Introduction
+                                        </li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="bg-gray-50 p-4 rounded-lg">
+                                    <p class="text-gray-600 text-sm">This specialization provided comprehensive training in machine learning concepts and practical applications, culminating in a hands-on capstone project that demonstrated real-world problem-solving skills.</p>
+                                </div>
+                            </div>
+                        `
+                    }
+                };
+            }
+
+            openCertificateModal(certificateId) {
+                const modal = document.getElementById('certificate-modal');
+                const title = document.getElementById('modal-title');
+                const content = document.getElementById('modal-content');
+                
+                const certificate = this.certificateDetails[certificateId];
+                if (certificate) {
+                    title.textContent = certificate.title;
+                    content.innerHTML = certificate.content;
+                    modal.classList.add('active');
+                }
+            }
+
+            closeCertificateModal() {
+                const modal = document.getElementById('certificate-modal');
+                modal.classList.remove('active');
+            }
+        }
+
+        // Global functions for modal
+        function openCertificateModal(certificateId) {
+            if (window.skillsPage) {
+                window.skillsPage.openCertificateModal(certificateId);
+            }
+        }
+
+        function closeCertificateModal() {
+            if (window.skillsPage) {
+                window.skillsPage.closeCertificateModal();
+            }
+        }
+
+        // Initialize skills page
+        document.addEventListener('DOMContentLoaded', () => {
+            window.skillsPage = new SkillsPage();
+        });
+
+        // Close modal when clicking outside
+        document.getElementById('certificate-modal')?.addEventListener('click', (e) => {
+            if (e.target.id === 'certificate-modal') {
+                closeCertificateModal();
+            }
+        });
+    </script>
+    <script src="main.js"></script>
+</body>
+</html>
