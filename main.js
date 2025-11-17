@@ -18,9 +18,9 @@ class CVWebsite {
         // Name typing effect
         if (document.getElementById('typed-name')) {
             new Typed('#typed-name', {
-                strings: ['Your Name'],
-                typeSpeed: 100,
-                startDelay: 500,
+                strings: ['Aniruddha Bhadra Ayan'],
+                typeSpeed: 80,
+                startDelay: 300,
                 showCursor: false,
                 onComplete: () => {
                     // Start title typing after name is complete
@@ -33,10 +33,10 @@ class CVWebsite {
     setupTitleTypewriter() {
         if (document.getElementById('typed-title')) {
             new Typed('#typed-title', {
-                strings: ['Computer Science Graduate', 'AI Enthusiast', 'Problem Solver'],
-                typeSpeed: 80,
-                backSpeed: 50,
-                backDelay: 2000,
+                strings: ['Computer Science Student', 'AI / ML Enthusiast', 'Data-driven Problem Solver'],
+                typeSpeed: 60,
+                backSpeed: 40,
+                backDelay: 1800,
                 loop: true,
                 showCursor: true,
                 cursorChar: '|'
